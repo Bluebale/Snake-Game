@@ -29,7 +29,7 @@ class Snake(object):
         x, y = self.direction
         new = (((cur[0] + (x * GRID_SIZE)) % SCREEN_WIDTH), (cur[1] + (y * GRID_SIZE)) % SCREEN_HEIGHT)
         if self.length > 2 and new in self.positions[2:]:
-            os.system('afplay ./gameover.wav&')
+            os.system('afplay ./sounds/gameover.wav&')
             self.state = 'gameover'
         else:
             self.positions.insert(0, new)
@@ -91,7 +91,7 @@ class Food(object):
     def randomize_pos(self):
         self.position = (random.randint(0, GRID_WIDTH - 1) * GRID_SIZE, random.randint(0, GRID_HEIGHT - 1) * GRID_SIZE)
     def draw(self, surface):
-        food = pygame.image.load('red-apple.png')
+        food = pygame.image.load('./images/red-apple.png')
         #r = pygame.Rect((self.position[0], self.position[1]), (GRID_SIZE, GRID_SIZE))
         #pygame.draw.rect(surface, self.color, r)
         surface.blit(food, self.position)
@@ -144,7 +144,7 @@ def main():
                 file = open(HIGHSCORES_FILE, "w")
                 file.write(str(max_score))
                 file.close()
-            os.system('afplay ./eat.wav&')
+            os.system('afplay ./sounds/eat.wav&')
             food.randomize_pos()
         if snake.state == 'gameover':
             snake.reset(surface, max_score)
