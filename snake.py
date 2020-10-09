@@ -89,12 +89,12 @@ class Food(object):
         self.color = (255,0,25)
         self.randomize_pos()
     def randomize_pos(self):
-        self.position = (random.randint(0, GRID_WIDTH - 1) * GRID_SIZE, random.randint(0, GRID_HEIGHT - 1) * GRID_SIZE)
+        self.position = (random.randint(0, GRID_WIDTH - 1) * GRID_SIZE, random.randint(2, GRID_HEIGHT - 1) * GRID_SIZE)
     def draw(self, surface):
-        food = pygame.image.load('./images/red-apple.png')
-        #r = pygame.Rect((self.position[0], self.position[1]), (GRID_SIZE, GRID_SIZE))
-        #pygame.draw.rect(surface, self.color, r)
-        surface.blit(food, self.position)
+        #food = pygame.image.load('./images/red-apple.png')
+        #surface.blit(food, self.position)
+        r = pygame.Rect((self.position[0], self.position[1]), (GRID_SIZE, GRID_SIZE))
+        pygame.draw.rect(surface, self.color, r)
 
 SCREEN_WIDTH = 480
 SCREEN_HEIGHT = 480
@@ -151,8 +151,8 @@ def main():
             screen.blit(surface, (0, 0))
         else:
             snake.store = None
-            snake.draw(surface)
             food.draw(surface)
+            snake.draw(surface)
             screen.blit(surface, (0, 0))
             text = myfont.render("Score {0}".format(snake.score), 1, (255, 255, 255))
             screen.blit(text, (15, 10))
