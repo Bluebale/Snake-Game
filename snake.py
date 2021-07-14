@@ -12,7 +12,7 @@ class Snake(object):
         self.positions = [((SCREEN_WIDTH / 2), (SCREEN_HEIGHT / 2))]
         self.direction = random.choice([UP, DOWN, LEFT, RIGHT])
         self.prev_dir = self.direction
-        self.color = (246,249,0)
+        self.color = BLUE
         self.score = 0
         self.state = 'playing'
 
@@ -48,7 +48,7 @@ class Snake(object):
         self.score = 0
         surface.fill((0,0,0))
         font = pygame.font.SysFont("comicsans", 60)
-        if self.store >= max_score:
+        if self.store > max_score:
             font = pygame.font.SysFont("comicsans", 60)
             text = font.render('NEW HIGHSCORE!', 1, (246,249,0))
             surface.blit(text, ((SCREEN_WIDTH-text.get_width())//2,(SCREEN_HEIGHT-text.get_height())//2-40))
@@ -67,7 +67,7 @@ class Snake(object):
                 r = pygame.Rect((int(p[0]), int(p[1])), (GRID_SIZE, GRID_SIZE))
                 pygame.draw.rect(surface, self.color, r)
                 pygame.draw.rect(surface, BLACK, r, 1)
-        pygame.draw.circle(surface, YELLOW, (int(self.positions[0][0] + GRID_SIZE/2), int(self.positions[0][1] + int(GRID_SIZE/2))), int(GRID_SIZE/2))
+        pygame.draw.circle(surface, BLUE, (int(self.positions[0][0] + GRID_SIZE/2), int(self.positions[0][1] + int(GRID_SIZE/2))), int(GRID_SIZE/2))
         pygame.draw.circle(surface, BLACK, (int(self.positions[0][0] + GRID_SIZE/2), int(self.positions[0][1] + int(GRID_SIZE/2))), int(GRID_SIZE/2),2)
 
     def handleKeys(self):
@@ -76,13 +76,13 @@ class Snake(object):
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
+                if (event.key == pygame.K_UP) or (event.key == pygame.K_w):
                     self.turn(UP)
-                elif event.key == pygame.K_DOWN:
+                elif (event.key == pygame.K_DOWN) or (event.key == pygame.K_s):
                     self.turn(DOWN)
-                elif event.key == pygame.K_LEFT:
+                elif (event.key == pygame.K_LEFT )or (event.key == pygame.K_a):
                     self.turn(LEFT)
-                elif event.key == pygame.K_RIGHT:
+                elif (event.key == pygame.K_RIGHT) or (event.key == pygame.K_d):
                     self.turn(RIGHT)
                 elif event.key == pygame.K_SPACE:
                     self.state = 'playing'
@@ -90,7 +90,7 @@ class Snake(object):
 class Food(object):
     def __init__(self):
         self.position = (0, 0)
-        self.color = RED
+        self.color = YELLOW
         self.randomize_pos()
     def randomize_pos(self):
         self.position = (random.randint(0, GRID_WIDTH - 1) * GRID_SIZE, random.randint(2, GRID_HEIGHT - 1) * GRID_SIZE)
@@ -103,8 +103,8 @@ SCREEN_HEIGHT = 480
 
 WHITE = (255,255,255)
 BLACK = (0,0,0)
-YELLOW = (255,235,0)
-RED = (255,0,25)
+YELLOW = (26,93,191)
+BLUE = (250,215,68)
 
 GRID_SIZE = 20
 GRID_WIDTH = SCREEN_WIDTH / GRID_SIZE
@@ -138,13 +138,15 @@ def main():
         if snake.get_head_pos() == food.position:
             snake.length += 1
             snake.score += 1
+            os.system('afplay ./sounds/eat.mp3&')
+            food.randomize_pos()
+            with open(HIGHSCORES_FILE, "r") as file:
+                max_score = int(file.read())
+        if snake.state == 'gameover':
             if snake.score > max_score:
                 file = open(HIGHSCORES_FILE, "w")
                 file.write(str(snake.score))
                 file.close()
-            os.system('afplay ./sounds/eat.mp3&')
-            food.randomize_pos()
-        if snake.state == 'gameover':
             snake.reset(surface, max_score)
             screen.blit(surface, (0, 0))
         else:
